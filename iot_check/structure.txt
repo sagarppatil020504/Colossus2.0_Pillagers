@@ -1,0 +1,8 @@
+📂 firebase_medical_db
+ ┣ 📂 worker
+ ┃ ┗ db_worker.py
+ ┣ 📂 medical
+ ┃ ┗ medicine_manager.py
+ ┣ 📂 main_db
+ ┃ ┗ main.py
+ ┗ firebase_config.json  (Firebase credentials) 

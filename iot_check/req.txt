@@ -1,0 +1,25 @@
+firebase_admin
+threading
+queue
+time
+serial
+os
+cv2
+keyboard
+queue
+threading
+time
+datetime  
+cv2
+numpy as np
+time
+os
+patient_db
+ultralytics
+torch
+urllib.request
+tkinter
+cv2
+PIL 
+queue
+ttkbootstrap
