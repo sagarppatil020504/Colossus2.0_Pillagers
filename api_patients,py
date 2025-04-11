@@ -1,0 +1,125 @@
+import requests
+from flask import Flask, request, jsonify
+import queue
+import threading
+
+app = Flask(__name__)
+
+# Firebase Realtime Database URL
+FIREBASE_URL = "https://vishwas-patra-default-rtdb.asia-southeast1.firebasedatabase.app/"
+
+# Queue for async processing
+task_queue = queue.Queue()
+
+# Background task executor
+def task_processor():
+    while True:
+        task = task_queue.get()
+        if task is None:
+            break
+        task()
+task_thread = threading.Thread(target=task_processor, daemon=True)
+task_thread.start()
+
+# 🔹 CREATE (Add a new patient)
+@app.route('/api/patients', methods=['POST'])
+def add_patient():
+    try:
+        data = request.json
+        P_id = data.get("P_id")
+
+        if not P_id:
+            return jsonify({"error": "P_id is required"}), 400
+
+        def task():
+            response = requests.get(f"{FIREBASE_URL}/{P_id}.json")
+            if response.json() is not None:
+                print("⚠️ Error: Patient ID must be unique!")
+                return
+
+            # Save patient data
+            requests.put(f"{FIREBASE_URL}/{P_id}.json", json=data)
+            print(f"✅ Patient '{P_id}' added successfully!")
+
+        task_queue.put(task)
+        return jsonify({"message": "Patient creation task added"}), 202
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# 🔹 READ (Fetch all patients)
+@app.route('/api/patients', methods=['GET'])
+def get_patients():
+    try:
+        response = requests.get(f"{FIREBASE_URL}.json")
+
+        if response.status_code != 200 or response.json() is None:
+            return jsonify({"error": "No patients found"}), 404
+
+        patients = response.json()
+        patient_list = [{"P_id": k, **v} for k, v in patients.items()]
+        return jsonify({"patients": patient_list}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# 🔹 READ (Fetch a specific patient)
+@app.route('/api/patients/<P_id>', methods=['GET'])
+def get_patient(P_id):
+    try:
+        response = requests.get(f"{FIREBASE_URL}/{P_id}.json")
+
+        if response.status_code != 200 or response.json() is None:
+            return jsonify({"error": "Patient not found"}), 404
+
+        patient_data = response.json()
+        patient_data["P_id"] = P_id
+        return jsonify(patient_data), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# 🔹 UPDATE (Modify patient data)
+@app.route('/api/patients/<P_id>', methods=['PUT'])
+def update_patient(P_id):
+    try:
+        updated_data = request.json
+
+        def task():
+            response = requests.get(f"{FIREBASE_URL}/{P_id}.json")
+            if response.json() is None:
+                print("⚠️ Error: Patient ID not found!")
+                return
+
+            # Update patient data
+            requests.patch(f"{FIREBASE_URL}/{P_id}.json", json=updated_data)
+            print(f"✅ Patient '{P_id}' updated successfully!")
+
+        task_queue.put(task)
+        return jsonify({"message": "Update task added"}), 202
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# 🔹 DELETE (Remove a patient record)
+@app.route('/api/patients/<P_id>', methods=['DELETE'])
+def delete_patient(P_id):
+    try:
+        def task():
+            response = requests.get(f"{FIREBASE_URL}/{P_id}.json")
+            if response.json() is None:
+                print("⚠️ Error: Patient ID not found!")
+                return
+
+            # Delete patient
+            requests.delete(f"{FIREBASE_URL}/{P_id}.json")
+            print(f"✅ Patient '{P_id}' deleted successfully!")
+
+        task_queue.put(task)
+        return jsonify({"message": "Delete task added"}), 202
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
