@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Doctors | Medicare Hospital</title>
+    <link rel="stylesheet" href="chat_css.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #cce5ff;
+        }
+
+        .nav-links a.active {
+            border-bottom: 2px solid white;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/api/placeholder/1200/600");
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 1rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #0d6efd;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+        }
+
+        /* Filters Section */
+        .filters-container {
+            max-width: 1200px;
+            margin: 3rem auto 2rem;
+            padding: 0 1rem;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            background-color: white;
+            border: 1px solid #0d6efd;
+            color: #0d6efd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: #e6f0ff;
+        }
+
+        .filter-btn.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 1px solid #ced4da;
+            border-radius: 30px;
+            font-size: 1rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        /* Doctors Section */
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #0d6efd;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .doctors-container {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 1rem;
+        }
+
+        .doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .doctor-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .doctor-img {
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .doctor-content {
+            padding: 1.5rem;
+        }
+
+        .doctor-name {
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+            color: #0d6efd;
+        }
+
+        .doctor-specialty {
+            color: #6c757d;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .doctor-info {
+            margin-bottom: 1.2rem;
+        }
+
+        .rating {
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+
+        .doctor-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+
+        .appointment-btn {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        /* Call to Action Section */
+        .cta {
+            background-color: #0d6efd;
+            padding: 4rem 0;
+            color: white;
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-light {
+            background-color: white;
+            color: #0d6efd;
+        }
+
+        .btn-light:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ced4da;
+            background-color: white;
+            color: #0d6efd;
+            margin: 0 0.3rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover {
+            background-color: #e6f0ff;
+        }
+
+        .page-btn.active {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-col p, .footer-col address {
+            margin-bottom: 1rem;
+            color: #adb5bd;
+        }
+
+        .social-links {
+            display: flex;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background-color: #495057;
+            color: white;
+            border-radius: 50%;
+            margin-right: 0.8rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background-color: #0d6efd;
+            transform: translateY(-3px);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 0;
+            border-top: 1px solid #495057;
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #adb5bd;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: #0d6efd;
+                padding: 1rem 0;
+                z-index: 10;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: 0.8rem 0;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .filters {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header and Navigation -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                Medicare
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="doctors.html">Doctors</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contactus.html">Contact</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Our Expert Doctors</h1>
+        <p>Meet our team of experienced healthcare professionals dedicated to your well-being</p>
+        <a href="schedule_appo.html" class="btn">Book an Appointment</a>
+    </section>
+<!-- chatbot section -->
+     
+    <!-- Chat button -->
+    <div class="chat-button" id="chatButton">
+        <span class="chat-icon">💬</span>
+    </div>
+
+    <!-- Chat dialog -->
+    <div class="chat-dialog" id="chatDialog">
+        <div class="chat-header">
+            <div class="chat-title">
+                <span class="chat-icon">🤖</span> AI Assistant
+            </div>
+            <div class="chat-close" id="chatClose">✕</div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                Hello! How can I help you today?
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off">
+            <button class="chat-send" id="chatSend">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+     <!-- end of chatbot -->
+    <!-- Filters Section -->
+    <section class="filters-container">
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="doctor-search" class="search-input" placeholder="Search doctors by name or specialty...">
+        </div>
+        <div class="filters">
+            <button class="filter-btn active" data-specialty="all">All Specialties</button>
+            <button class="filter-btn" data-specialty="cardiology">Cardiology</button>
+            <button class="filter-btn" data-specialty="neurology">Neurology</button>
+            <button class="filter-btn" data-specialty="orthopedics">Orthopedics</button>
+            <button class="filter-btn" data-specialty="pediatrics">Pediatrics</button>
+            <button class="filter-btn" data-specialty="obstetrics">Obstetrics & Gynecology</button>
+            <button class="filter-btn" data-specialty="dermatology">Dermatology</button>
+        </div>
+    </section>
+
+    <!-- Doctors Section -->
+    <section class="doctors-container">
+        <h2 class="section-title">Meet Our Specialists</h2>
+        <p class="section-subtitle">Our team of highly qualified medical professionals uses advanced technologies and proven procedures to provide the best healthcare services</p>
+        <div class="doctors-grid" id="doctors-grid">
+            <!-- Doctor cards will be populated by JavaScript -->
+        </div>
+        <div class="pagination" id="pagination">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta">
+        <div class="cta-container">
+            <h2>Need Medical Consultation?</h2>
+            <p>Schedule an appointment with one of our specialists today and take the first step towards better health.</p>
+            <a href="#" class="btn btn-light">Find a Doctor</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Medicare Hospital</h3>
+                <p>Providing quality healthcare services for over 25 years.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Doctors</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact Us</h3>
+                <address>
+                    1234 Healthcare Blvd<br>
+                    Wellness City, WC 54321<br>
+                    <br>
+                    Phone: (555) 123-4567<br>
+                    Email: info@medicare-hospital.com
+                </address>
+            </div>
+            <div class="footer-col">
+                <h3>Opening Hours</h3>
+                <p>Monday - Friday: 8:00 AM - 8:00 PM</p>
+                <p>Saturday: 9:00 AM - 6:00 PM</p>
+                <p>Sunday: 10:00 AM - 4:00 PM</p>
+                <p><strong>Emergency:</strong> 24/7</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Medicare Hospital. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Font Awesome Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script src="chat_script.js"></script>
+    <!-- JavaScript -->
+    <script>
+        // Doctors Data
+        const doctors = [
+            {
+                name: "Dr. Sarah Johnson",
+                specialty: "Cardiology",
+                specialtySlug: "cardiology",
+                experience: "15 years experience",
+                education: "MD, Harvard Medical School",
+                rating: 4.9,
+                reviews: 127,
+                image: "/api/placeholder/400/500"
+            },
+            {
+                name: "Dr. Michael Rodriguez",
+                specialty: "Neurology",
+                specialtySlug: "neurology",
+                experience: "12 years experience",
+                education: "MD, Johns Hopkins University",
+                rating: 4.8,
+                reviews: 98,
+                image: "/api/placeholder/400/500"
+            },
+            {
+                name: "Dr. Emily Williams",
+                specialty: "Pediatrics",
+                specialtySlug: "pediatrics",
+                experience: "10 years experience",
+                education: "MD, Stanford University",
+                rating: 4.9,
+                reviews: 145,
+                image: "/api/placeholder/400/500"
+            },
+            {
+                name: "Dr. James Wilson",
+                specialty: "Orthopedics",
+                specialtySlug: "orthopedics",
+                experience: "18 years experience",
+                education: "MD, Yale University",
+                rating: 4.7,
+                reviews: 112,
+                image: "/api/placeholder/400/500"
+            },
+            {
+                name: "Dr. Olivia Chen",
+                specialty: "Obstetrics & Gynecology",
+                specialtySlug: "obstetrics",
+                experience: "14 years experience",
+                education: "MD, University of California",
+                rating: 4.8,
+                reviews: 163,
+                image: "/api/placeholder/400/500"
+            },
+            {
+                name: "Dr. Daniel Brown",
+                specialty: "Dermatology",
+                specialtySlug: "dermatology",
+                experience: "11 years experience",
+                education: "MD, Columbia University",
+                rating: 4.6,
+                reviews: 87,
+                image: "/api/placeholder/400/500"
+            },
+            {
+                name: "Dr. Rebecca Martinez",
+                specialty: "Cardiology",
+                specialtySlug: "cardiology",
+                experience: "9 years experience",
+                education: "MD, Duke University",
+                rating: 4.7,
+                reviews: 76,
+                image: "/api/placeholder/400/500"
+            },
+            {
+                name: "Dr. Thomas Lee",
+                specialty: "Neurology",
+                specialtySlug: "neurology",
+                experience: "20 years experience",
+                education: "MD, University of Pennsylvania",
+                rating: 4.9,
+                reviews: 203,
+                image: "/api/placeholder/400/500"
+            }
+        ];
+
+        // Populate Doctors
+        const doctorsGrid = document.getElementById('doctors-grid');
+        
+        function renderDoctors(doctorsToRender) {
+            doctorsGrid.innerHTML = '';
+            
+            if (doctorsToRender.length === 0) {
+                doctorsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #6c757d;">No doctors found matching your search criteria.</p>';
+                return;
+            }
+            
+            doctorsToRender.forEach(doctor => {
+                const doctorCard = document.createElement('div');
+                doctorCard.className = 'doctor-card';
+                
+                // Generate stars for rating
+                let stars = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= Math.floor(doctor.rating)) {
+                        stars += '<i class="fas fa-star"></i>';
+                    } else if (i === Math.ceil(doctor.rating) && !Number.isInteger(doctor.rating)) {
+                        stars += '<i class="fas fa-star-half-alt"></i>';
+                    } else {
+                        stars += '<i class="far fa-star"></i>';
+                    }
+                }
+                
+                doctorCard.innerHTML = `
+                    <div class="doctor-img" style="background-image: url(${doctor.image})"></div>
+                    <div class="doctor-content">
+                        <h3 class="doctor-name">${doctor.name}</h3>
+                        <p class="doctor-specialty">${doctor.specialty}</p>
+                        <div class="doctor-info">
+                            <p><i class="fas fa-graduation-cap"></i> ${doctor.education}</p>
+                            <p><i class="fas fa-clock"></i> ${doctor.experience}</p>
+                        </div>
+                        <div class="rating">
+                            ${stars} <span>(${doctor.reviews} reviews)</span>
+                        </div>
+                        <a href="#" class="btn appointment-btn">Book Appointment</a>
+                    </div>
+                `;
+                
+                doctorsGrid.appendChild(doctorCard);
+            });
+        }
+
+        // Initial render
+        renderDoctors(doctors);
+
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const searchInput = document.getElementById('doctor-search');
+        
+        let currentSpecialty = 'all';
+        let searchTerm = '';
+        
+        function filterDoctors() {
+            let filteredDoctors = doctors;
+            
+            // Filter by specialty
+            if (currentSpecialty !== 'all') {
+                filteredDoctors = filteredDoctors.filter(doctor => doctor.specialtySlug === currentSpecialty);
+            }
+            
+            // Filter by search term
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                filteredDoctors = filteredDoctors.filter(doctor => 
+                    doctor.name.toLowerCase().includes(term) || 
+                    doctor.specialty.toLowerCase().includes(term)
+                );
+            }
+            
+            renderDoctors(filteredDoctors);
+        }
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update current specialty
+                currentSpecialty = button.dataset.specialty;
+                
+                // Filter doctors
+                filterDoctors();
+            });
+        });
+        
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            filterDoctors();
+        });
+
+        // Pagination (for demonstration - not fully functional)
+        const pageButtons = document.querySelectorAll('.page-btn');
+        
+        pageButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                pageButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // In a real implementation, we would load different sets of doctors here
+                // For demonstration, we're just showing the same doctors
+            });
+        });
+
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.nav-links') && !event.target.closest('.menu-toggle')) {
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

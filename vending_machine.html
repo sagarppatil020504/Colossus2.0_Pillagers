@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare Vending Machine</title>
+    <link rel="stylesheet" href="chat_css.css">
+    <link rel="script" href="chat_script.js">
+    <link rel="script" href="chat_script.js">
+    <style>
+        :root {
+            --primary: #1976d2;
+            --primary-dark: #0d47a1;
+            --accent: #ff5722;
+            --light-gray: #f5f5f5;
+            --mid-gray: #e0e0e0;
+            --dark-gray: #757575;
+            --error: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: #3498db;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+        
+        p {
+            color: var(--dark-gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .upload-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .upload-box {
+            flex: 1;
+            min-width: 250px;
+            border: 2px dashed var(--mid-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-box:hover {
+            border-color: var(--primary);
+        }
+        
+        .upload-box i {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        #camera-feed {
+            width: 100%;
+            background: #000;
+        }
+        
+        .camera-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-accent:hover {
+            background-color: #e64a19;
+        }
+        
+        .prescription-data {
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--mid-gray);
+        }
+        
+        th {
+            background-color: var(--light-gray);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .edit-cell {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .edit-cell:hover::after {
+            content: '✎';
+            position: absolute;
+            right: 10px;
+            color: var(--primary);
+        }
+        
+        .status {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .status.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+        
+        .status.error {
+            background-color: #ffebee;
+            color: var(--error);
+            border-left: 4px solid var(--error);
+        }
+        
+        .status.processing {
+            background-color: #e3f2fd;
+            color: var(--primary);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .medicines-section {
+            margin-top: 1.5rem;
+        }
+        
+        .medicine-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .medicine-info {
+            flex: 1;
+        }
+        
+        .medicine-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dosage-time {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .icon-placeholder {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .upload-methods {
+                flex-direction: column;
+            }
+            
+            .upload-box {
+                min-width: 100%;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .responsive-table {
+                overflow-x: auto;
+            }
+        }
+    
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo" >Medi<span>Care</span> Vending Machine</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="doctors.html">Doctors</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contactus.html">Contact</a></li>
+                    <li><a href="dual_login.html" class="login-btn">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <!-- chatbot section -->
+     
+    <!-- Chat button -->
+    <div class="chat-button" id="chatButton">
+        <span class="chat-icon">💬</span>
+    </div>
+
+    <!-- Chat dialog -->
+    <div class="chat-dialog" id="chatDialog">
+        <div class="chat-header">
+            <div class="chat-title">
+                <span class="chat-icon">🤖</span> AI Assistant
+            </div>
+            <div class="chat-close" id="chatClose">✕</div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                Hello! How can I help you today?
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off">
+            <button class="chat-send" id="chatSend">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+     <!-- end of chatbot -->
+    <main class="container">
+        <div class="card">
+            <h2>Upload Your Prescription</h2>
+            <p>Upload an image of your prescription or take a photo with your device. Our system will extract and display all the important details.</p>
+            
+            <div class="upload-section">
+                <div class="upload-methods">
+                    <div class="upload-box" id="upload-box">
+                        <i class="fas fa-file-upload"></i>
+                        <h3>Upload Prescription</h3>
+                        <p>Click or drag and drop your prescription image here</p>
+                        <input type="file" id="prescription-upload" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="upload-box" id="camera-box">
+                        <i class="fas fa-camera"></i>
+                        <h3>Take a Photo</h3>
+                        <p>Use your device's camera to capture your prescription</p>
+                    </div>
+                </div>
+                
+                <div class="camera-container" id="camera-container">
+                    <video id="camera-feed" autoplay></video>
+                    <div class="camera-controls">
+                        <button class="btn btn-accent" id="capture-btn">Capture Photo</button>
+                        <button class="btn" id="cancel-camera-btn">Cancel</button>
+                    </div>
+                </div>
+                
+                <div id="preview-container" style="display: none; text-align: center;">
+                    <h3>Prescription Preview</h3>
+                    <img id="preview-image" style="max-width: 100%; max-height: 400px; border-radius: 8px; margin: 1rem 0;">
+                    <div class="action-buttons">
+                        <button class="btn" id="process-btn">Process Prescription</button>
+                        <button class="btn" id="retake-btn" style="background-color: var(--dark-gray);">Retake Photo</button>
+                    </div>
+                </div>
+                
+                <div class="status processing" id="processing-status">
+                    <i class="fas fa-spinner fa-spin"></i> Processing your prescription... Please wait a moment.
+                </div>
+                
+                <div class="status error" id="error-status">
+                    <i class="fas fa-exclamation-circle"></i> <span id="error-message">Error processing your prescription. Please try again.</span>
+                </div>
+                
+                <div class="status success" id="success-status">
+                    <i class="fas fa-check-circle"></i> Prescription processed successfully! Details have been extracted.
+                </div>
+            </div>
+        </div>
+        
+        <div class="prescription-data" id="prescription-data">
+            <div class="card">
+                <h2>Prescription Information</h2>
+                <p>Below are the details extracted from your prescription. You can edit any information by clicking on the field.</p>
+                
+                <div class="responsive-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Information</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Doctor Name</td>
+                                <td class="edit-cell" data-field="doctor_name">Dr. Jane Smith</td>
+                            </tr>
+                            <tr>
+                                <td>Hospital/Clinic</td>
+                                <td class="edit-cell" data-field="hospital_name">Sunshine Medical Center</td>
+                            </tr>
+                            <tr>
+                                <td>Patient Name</td>
+                                <td class="edit-cell" data-field="patient_name">John Doe</td>
+                            </tr>
+                            <tr>
+                                <td>Diagnosis</td>
+                                <td class="edit-cell" data-field="disease">Hypertension & Type 2 Diabetes</td>
+                            </tr>
+                            <tr>
+                                <td>Prescription Date</td>
+                                <td class="edit-cell" data-field="prescription_date">March 28, 2025</td>
+                            </tr>
+                            <tr>
+                                <td>Follow-up Date</td>
+                                <td class="edit-cell" data-field="followup_date">April 28, 2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Prescribed Medications</h2>
+                <p>Here are the medications prescribed. Click on any item to edit details.</p>
+                
+                <div class="medicines-section" id="medicines-container">
+                    <!-- Medicine cards will be inserted here dynamically -->
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn" id="save-btn">Save Changes</button>
+                    <button class="btn btn-accent" id="print-btn">Print Prescription</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="chat_script.js"></script>
+    <script type="module">
+        import {vend_API_URL} from  "./config/config.js";
+
+        // Sample data - this would be populated by your Python backend
+        // const sampleMedicines = [
+        //     {
+        //         name: "Lisinopril",
+        //         dosage: "10mg",
+        //         frequency: "Once daily",
+        //         timing: "Morning",
+        //         duration: "30 days",
+        //         instructions: "Take with food"
+        //     },
+        //     {
+        //         name: "Metformin",
+        //         dosage: "500mg",
+        //         frequency: "Twice daily",
+        //         timing: "Morning and evening",
+        //         duration: "30 days",
+        //         instructions: "Take after meals"
+        //     },
+        //     {
+        //         name: "Aspirin",
+        //         dosage: "81mg",
+        //         frequency: "Once daily",
+        //         timing: "Morning",
+        //         duration: "30 days",
+        //         instructions: "Take with water"
+        //     }
+        // ];
+
+        // DOM elements
+        const uploadBox = document.getElementById('upload-box');
+        const uploadInput = document.getElementById('prescription-upload');
+        const cameraBox = document.getElementById('camera-box');
+        const cameraContainer = document.getElementById('camera-container');
+        const cameraFeed = document.getElementById('camera-feed');
+        const captureBtn = document.getElementById('capture-btn');
+        const cancelCameraBtn = document.getElementById('cancel-camera-btn');
+        const previewContainer = document.getElementById('preview-container');
+        const previewImage = document.getElementById('preview-image');
+        const processBtn = document.getElementById('process-btn');
+        const retakeBtn = document.getElementById('retake-btn');
+        const processingStatus = document.getElementById('processing-status');
+        const errorStatus = document.getElementById('error-status');
+        const successStatus = document.getElementById('success-status');
+        const prescriptionData = document.getElementById('prescription-data');
+        const medicinesContainer = document.getElementById('medicines-container');
+        const saveBtn = document.getElementById('save-btn');
+        const printBtn = document.getElementById('print-btn');
+        const errorMessage = document.getElementById('error-message');
+
+        let stream = null;
+        let capturedImage = null;
+
+        // Event listeners
+        uploadBox.addEventListener('click', () => {
+            uploadInput.click();
+        });
+
+        uploadInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    previewImage.src = event.target.result;
+                    previewContainer.style.display = 'block';
+                    capturedImage = event.target.result;
+                };
+                console.log("reading "+file)
+                reader.readAsDataURL(file);
+            }
+        });
+
+        cameraBox.addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' }
+                });
+                cameraFeed.srcObject = stream;
+                cameraContainer.style.display = 'block';
+                cameraBox.style.display = 'none';
+                uploadBox.style.display = 'none';
+            } catch (err) {
+                errorMessage.textContent = "Unable to access camera. Please check permissions or use the upload option.";
+                errorStatus.style.display = 'block';
+                console.error("Error accessing camera:", err);
+            }
+        });
+
+        captureBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraFeed.videoWidth;
+            canvas.height = cameraFeed.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(cameraFeed, 0, 0, canvas.width, canvas.height);
+            capturedImage = canvas.toDataURL('image/png');
+            
+            previewImage.src = capturedImage;
+            previewContainer.style.display = 'block';
+            cameraContainer.style.display = 'none';
+            
+            // Stop the camera stream
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+
+        cancelCameraBtn.addEventListener('click', () => {
+            cameraContainer.style.display = 'none';
+            cameraBox.style.display = 'block';
+            uploadBox.style.display = 'block';
+            
+            // Stop the camera stream
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        });
+
+        retakeBtn.addEventListener('click', () => {
+            previewContainer.style.display = 'none';
+            cameraBox.style.display = 'block';
+            uploadBox.style.display = 'block';
+        });
+
+        processBtn.addEventListener('click', async () => {
+            if (!capturedImage) {
+                alert("Please upload or capture an image first.");
+                return;
+            }
+            
+            // Show processing status and hide others
+            processingStatus.style.display = "block";
+            errorStatus.style.display = "none";
+            successStatus.style.display = "none";
+            prescriptionData.style.display = "none";
+
+            const formData = new FormData();
+            const blob = await fetch(capturedImage).then(res => res.blob());
+            formData.append("file", blob, "prescription.jpg");
+
+            try {
+                const response = await fetch(vend_API_URL, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    console.log(data);
+
+                    // Extracted data
+                    const extractedData = data.extracted_data;
+
+                    // Update Prescription Information
+                    document.querySelector('[data-field="doctor_name"]').textContent = extractedData.doctor_name || "N/A";
+                    document.querySelector('[data-field="hospital_name"]').textContent = extractedData.hospital_name || "N/A";
+                    document.querySelector('[data-field="patient_name"]').textContent = extractedData.patient_name || "N/A";
+                    document.querySelector('[data-field="disease"]').textContent = extractedData.disease || "N/A";
+                    document.querySelector('[data-field="prescription_date"]').textContent = extractedData.prescription_date || "N/A";
+                    document.querySelector('[data-field="followup_date"]').textContent = extractedData.followup_date || "N/A";
+
+                    // Update Medicines
+                    if (Array.isArray(extractedData.medicines)) {
+                        console.log("Medicines: ", extractedData.medicines);
+                        const formattedMedicines = extractedData.medicines.map((name, index) => ({
+                            name,
+                            dosage: extractedData.dosage[index] || "N/A",
+                            frequency: extractedData.frequency[index] || "N/A",
+                            timing: extractedData.timing[index] || "N/A",
+                            duration: extractedData.duration[index] || "N/A",
+                            instructions: extractedData.instructions || "N/A"
+                        }));
+                        renderMedicineCards(formattedMedicines);
+                    }
+
+                    successStatus.style.display = "block";
+                    prescriptionData.style.display = "block"; // Show the table section
+                } else {
+                    throw new Error(data.detail);
+                }
+            } catch (error) {
+                errorMessage.textContent = "Error: " + error.message;
+                errorStatus.style.display = "block";
+                processingStatus.style.display = "none";
+                prescriptionData.style.display = "none";
+            }
+        });
+
+        // Function to render medicine cards
+        function renderMedicineCards(medicines) {
+            medicinesContainer.innerHTML = ''; // Clear existing medicines
+            medicines.forEach((medicine, index) => {
+                const card = document.createElement('div');
+                card.className = 'medicine-card';
+                               
+                card.innerHTML = `
+                    <div class="icon-placeholder">${medicine.name.charAt(0)}</div>
+                    <div class="medicine-info">
+                        <div class="medicine-name edit-cell" data-field="medicine_name_${index}">${medicine.name}</div>
+                        <div class="dosage-time">
+                            <span class="edit-cell" data-field="medicine_dosage_${index}">${medicine.dosage}</span> -
+                            <span class="edit-cell" data-field="medicine_frequency_${index}">${medicine.frequency}</span> -
+                            <span class="edit-cell" data-field="medicine_timing_${index}">${medicine.timing}</span>
+                        </div>
+                        <div class="instructions edit-cell" data-field="medicine_instructions_${index}">${medicine.instructions}</div>
+                        <div class="duration edit-cell" data-field="medicine_duration_${index}">Duration: ${medicine.duration}</div>
+                    </div>
+                `;
+
+                medicinesContainer.appendChild(card);
+            });
+
+            // Add event listeners to make cells editable
+            document.querySelectorAll('.edit-cell').forEach(cell => {
+                cell.addEventListener('click', makeEditable);
+            });
+        }
+
+        // Function to make cells editable
+        function makeEditable(e) {
+            const cell = e.currentTarget;
+            const currentValue = cell.textContent;
+            const field = cell.getAttribute('data-field');
+            
+            // Replace with input
+            cell.innerHTML = `<input type="text" value="${currentValue}" style="width: 100%; padding: 5px;">`;
+            const input = cell.querySelector('input');
+            input.focus();
+            
+            // Save on blur or enter
+            input.addEventListener('blur', finishEditing);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    finishEditing(e);
+                }
+            });
+            
+            function finishEditing(e) {
+                const newValue = input.value.trim();
+                cell.textContent = newValue;
+                
+                // Here you would update your data model
+                console.log(`Updated ${field} to: ${newValue}`);
+            }
+        }
+
+        // Save button click handler
+        saveBtn.addEventListener('click', () => {
+            // Here you would send the updated data back to your backend
+            alert('Changes saved successfully!');
+        });
+
+        // Print button click handler
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+    </script>
+</body>
+</html>

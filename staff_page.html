@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - MediCare Hospital</title>
+    <link rel="stylesheet" href="chat_css.css">
+    <script src="chat_script.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: #3498db;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-name {
+            margin-right: 15px;
+        }
+        
+        .logout-btn {
+            background-color: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: white;
+            color: #2c3e50;
+        }
+        
+        /* Main Content */
+        main {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            margin-right: 20px;
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .menu-item {
+            margin-bottom: 10px;
+        }
+        
+        .menu-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #7f8c8d;
+            padding: 10px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .menu-link:hover, .menu-link.active {
+            background-color: #f0f7ff;
+            color: #3498db;
+        }
+        
+        .menu-icon {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        /* Content Area */
+        .content {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .content-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .search-bar {
+            display: flex;
+        }
+        
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 0.9rem;
+        }
+        
+        .search-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        /* Add Patient Form */
+        .patient-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .form-buttons {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        /* Patient Table */
+        .patient-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .patient-table th, .patient-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .patient-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .patient-table tr:hover {
+            background-color: #f5f7fb;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .action-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .edit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .medicine-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        /* Medicine Administration Section */
+        .medicine-admin {
+            display: none;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .med-list {
+            margin-top: 15px;
+        }
+        
+        .med-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .med-info {
+            flex: 1;
+        }
+        
+        .med-name {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .med-schedule {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .med-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .status-scheduled {
+            background-color: #f1c40f;
+            color: #333;
+        }
+        
+        .status-delivered {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .status-missed {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            main {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .patient-form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .patient-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .search-bar {
+                width: 100%;
+            }
+            
+            .search-input {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo">Medi<span>Care</span></a>
+            <div class="user-info">
+                <span class="user-name" id="user-display-name">Dr. John Doe</span>
+                <button id="logout-btn" class="logout-btn">Logout</button>
+            </div>
+        </nav>
+    </header>
+<!-- chatbot section -->
+     
+    <!-- Chat button -->
+    <div class="chat-button" id="chatButton">
+        <span class="chat-icon">💬</span>
+    </div>
+
+    <!-- Chat dialog -->
+    <div class="chat-dialog" id="chatDialog">
+        <div class="chat-header">
+            <div class="chat-title">
+                <span class="chat-icon">🤖</span> AI Assistant
+            </div>
+            <div class="chat-close" id="chatClose">✕</div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                Hello! How can I help you today?
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off">
+            <button class="chat-send" id="chatSend">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+     <!-- end of chatbot -->
+    <!-- Main Content -->
+    <main>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h3 class="sidebar-title">Dashboard</h3>
+            <ul class="menu">
+                <li class="menu-item">
+                    <a href="#" class="menu-link active" data-tab="patients-tab">
+                        <span class="menu-icon">👥</span>
+                        Patients
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-tab="medicines-tab">
+                        <span class="menu-icon">💊</span>
+                        Medicines
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-tab="schedule-tab">
+                        <span class="menu-icon">📅</span>
+                        Schedule
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-tab="reports-tab">
+                        <span class="menu-icon">📊</span>
+                        Reports
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="menu-link" data-tab="settings-tab">
+                        <span class="menu-icon">⚙️</span>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Patients Tab -->
+            <div id="patients-tab" class="tab-content active">
+                <!-- Inside your Patients Tab Search Bar -->
+                <div class="search-bar">
+                    <input type="text" id="patient-search" class="search-input" placeholder="Search patients id...">
+                    <button id="patient-search-btn" class="search-btn">Search</button>
+                </div>
+
+                <!-- Patient Form -->
+                <form id="patient-form" class="patient-form">
+                    <div class="form-group">
+                        <label for="patient-id">Patient ID</label>
+                        <input type="text" id="patient-id" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="patient-name">Patient Name</label>
+                        <input type="text" id="patient-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="patient-age">Age</label>
+                        <input type="number" id="patient-age" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medical-condition">Medical Condition</label>
+                        <input type="text" id="medical-condition" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medicines">Medicines</label>
+                        <input type="text" id="medicines" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medicine-time">Medicine Schedule</label>
+                        <input type="text" id="medicine-time" class="form-control" placeholder="e.g. 8:00, 14:00, 20:00" required>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" id="reset-form-btn" class="btn btn-secondary">Reset</button>
+                        <button type="submit" id="save-patient-btn" class="btn">Save Patient</button>
+                    </div>
+                </form>
+
+                <!-- Patient Table -->
+                <table class="patient-table">
+                    <thead>
+                        <tr>
+                            <th>P_ID</th>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Medical Condition</th>
+                            <th>Medicines</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patient-table-body">
+                        <!-- Patient data will be populated here -->
+                    </tbody>
+                </table>
+            
+                <!-- Medicine Administration Section -->
+                <div id="medicine-admin" class="medicine-admin">
+                    <h3>Medicine Administration for: <span id="selected-patient-name">John Doe</span></h3>
+                    <div id="med-list" class="med-list">
+                        <!-- Medicine items will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medicines Tab -->
+            <div id="medicines-tab" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Medicine Inventory</h2>
+                    <div class="search-bar">
+                        <input type="text" class="search-input" placeholder="Search medicines...">
+                        <button class="search-btn">Search</button>
+                    </div>
+                </div>
+                <p>Medicine inventory management will be implemented here.</p>
+            </div>
+
+            <!-- Schedule Tab -->
+            <div id="schedule-tab" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Medicine Schedule</h2>
+                </div>
+                <p>Medicine delivery schedule will be implemented here.</p>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reports-tab" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Reports</h2>
+                </div>
+                <p>Reports generation will be implemented here.</p>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="content-header">
+                    <h2 class="content-title">Settings</h2>
+                </div>
+                <p>System settings will be implemented here.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 MediCare Hospital. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase SDK -->
+    //  DOM elements
+    <script type="module">
+        // 1) Update your API endpoint to match the "patients" proxy
+        import {pat_API_URL, staff_API_URL, API_URL} from "./config/config.js"; // Adjust path as needed
+        let apiUrl = staff_API_URL;
+        let Pat_apiUrl = pat_API_URL;
+        // DOM elements
+        const userDisplayName = document.getElementById('user-display-name');
+        const logoutBtn = document.getElementById('logout-btn');
+        const patientForm = document.getElementById('patient-form');
+        const patientTableBody = document.getElementById('patient-table-body');
+        const resetFormBtn = document.getElementById('reset-form-btn');
+        const medicineAdmin = document.getElementById('medicine-admin');
+        const medList = document.getElementById('med-list');
+        const selectedPatientName = document.getElementById('selected-patient-name');
+        const patientSearch = document.getElementById('patient-search');
+        const patientSearchBtn = document.getElementById('patient-search-btn');
+    
+        // --------------------------------------------------
+        // Set a default display name
+        // --------------------------------------------------
+        userDisplayName.textContent = 'User';
+    
+        // Logout just redirects to dual_login.html
+        logoutBtn.addEventListener('click', () => {
+            // Optionally clear session/local storage here if needed
+            window.location.href = 'dual_login.html';
+        });
+    
+        // --------------------------------------------------
+        // Handle Tab Switching
+        // --------------------------------------------------
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links and tab contents
+                document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                
+                // Add active class to clicked link and display its content
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    
+        // --------------------------------------------------
+        // Reset Form
+        // --------------------------------------------------
+        resetFormBtn.addEventListener('click', () => {
+            patientForm.reset();
+            document.getElementById('patient-id').value = '';
+            document.getElementById('save-patient-btn').textContent = 'Save Patient';
+            
+        });
+    
+        // --------------------------------------------------
+        // Create / Update "Patient" Record
+        // --------------------------------------------------
+        patientForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const patientId = document.getElementById('patient-id').value;
+        
+            // Map form fields to your DB fields
+            const patientData = {
+                pat_name: document.getElementById('patient-name').value,
+                age: document.getElementById('patient-age').value,       // stored as string in DB
+                medical_cond: document.getElementById('medical-condition').value,
+                Medicines: document.getElementById('medicines').value,
+                time_medicines: document.getElementById('medicine-time').value,
+                Medicine_taken: false,  // Example field
+                P_id: new Date().getTime().toString() // Example unique P_id if needed; otherwise, user may enter one elsewhere
+            };
+        
+            try {
+                if (!patientId) {
+                    // CREATE (POST)
+                    const response = await fetch(Pat_apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(patientData)
+                    });
+                    if (!response.ok) {
+                        throw new Error('Error adding patient');
+                    }
+                    console.log('Patient added successfully');
+                } else {
+                    // UPDATE (PUT)
+                    const response = await fetch(`${Pat_apiUrl}/${patientId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(patientData)
+                    });
+                    if (!response.ok) {
+                        throw new Error('Error updating patient');
+                    }
+                    console.log('Patient updated successfully');
+                }
+                
+                loadPatients();
+                patientForm.reset();
+                document.getElementById('patient-id').value = '';
+                document.getElementById('save-patient-btn').textContent = 'Save Patient';
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    
+        // --------------------------------------------------
+        // Read: Load Patients (from DB)
+        // --------------------------------------------------
+        async function loadPatients() {
+            try {
+                const response = await fetch(Pat_apiUrl); // GET /patients
+                if (!response.ok) {
+                    throw new Error('Error loading patients');
+                }
+                // Assume DB returns an object keyed by record ID:
+                const data = await response.json();
+                const patientsArray = Object.entries(data).map(([key, value]) => ({
+                    id: key,
+                    ...value
+                }));
+        
+                // Clear the table
+                patientTableBody.innerHTML = '';
+        
+                // Populate the table rows
+                patientsArray.forEach(patient => {
+                    const row = `
+                        <tr>
+                            <td>${patient.id}</td>
+                            <td>${patient.pat_name || ''}</td>
+                            <td>${patient.age || ''}</td>
+                            <td>${patient.medical_cond || ''}</td>
+                            <td>${patient.Medicines || ''}</td>
+                            <td class="action-buttons">
+                                <button class="action-btn edit-btn" data-id="${patient.id}">Edit</button>
+                                <button class="action-btn delete-btn" data-id="${patient.id}">Delete</button>
+                                <button class="action-btn medicine-btn" data-id="${patient.id}" data-name="${patient.pat_name}">Medicines</button>
+                            </td>
+                        </tr>
+                    `;
+                    patientTableBody.insertAdjacentHTML('beforeend', row);
+                });
+        
+                addActionButtonListeners();
+            } catch (error) {
+                console.error('Error loading patients:', error);
+            }
+        }
+    
+        // --------------------------------------------------
+        // Search Functionality: Search by P_id
+        // --------------------------------------------------
+        patientSearchBtn.addEventListener('click', async function() {
+            const searchQuery = patientSearch.value.trim();
+            if (!searchQuery) {
+                alert("Please enter a Patient P_id to search.");
+                return;
+            }
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Error loading patients for search');
+                }
+                const data = await response.json();
+                const patientsArray = Object.entries(data).map(([key, value]) => ({
+                    id: key,
+                    ...value
+                }));
+                // Find patient where P_id matches the search query
+                const foundPatient = patientsArray.find(patient => patient.P_id === searchQuery);
+                if (foundPatient) {
+                    // Populate the form with the found patient's data
+                    document.getElementById('patient-id').value = foundPatient.id;
+                    document.getElementById('patient-name').value = foundPatient.pat_name || '';
+                    document.getElementById('patient-age').value = foundPatient.age || '';
+                    document.getElementById('medical-condition').value = foundPatient.medical_cond || '';
+                    document.getElementById('medicines').value = foundPatient.Medicines || '';
+                    document.getElementById('medicine-time').value = foundPatient.time_medicines || '';
+                } else {
+                    alert("No patient found with the given P_id.");
+                }
+            } catch (error) {
+                console.error('Error searching patient:', error);
+            }
+        });
+    
+        // --------------------------------------------------
+        // Action Buttons: Edit / Delete / Show Medicines
+        // --------------------------------------------------
+        function addActionButtonListeners() {
+            // Edit patient
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const patientId = this.getAttribute('data-id');
+                    try {
+                        const response = await fetch(`${Pat_apiUrl}/${patientId}`);
+                        if (!response.ok) {
+                            throw new Error('Error fetching patient');
+                        }
+                        const patient = await response.json();
+                        // Populate form
+                        document.getElementById('patient-id').value = patientId;
+                        document.getElementById('patient-name').value = patient.pat_name || '';
+                        document.getElementById('patient-age').value = patient.age || '';
+                        document.getElementById('medical-condition').value = patient.medical_cond || '';
+                        document.getElementById('medicines').value = patient.Medicines || '';
+                        document.getElementById('medicine-time').value = patient.time_medicines || '';
+                        
+                        document.getElementById('save-patient-btn').textContent = 'Update Patient';
+                    } catch (error) {
+                        console.error('Error getting patient:', error);
+                    }
+                });
+            });
+            
+            // Delete patient
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const patientId = this.getAttribute('data-id');
+                    if (confirm('Are you sure you want to delete this patient?')) {
+                        try {
+                            const response = await fetch(`${Pat_apiUrl}/${patientId}`, {
+                                method: 'DELETE'
+                            });
+                            if (!response.ok) {
+                                throw new Error('Error deleting patient');
+                            }
+                            console.log('Patient deleted');
+                            loadPatients();
+                        } catch (error) {
+                            console.error('Error deleting patient:', error);
+                        }
+                    }
+                });
+            });
+            
+            // Show medicine administration
+            document.querySelectorAll('.medicine-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const patientId = this.getAttribute('data-id');
+                    const patientName = this.getAttribute('data-name');
+                    medicineAdmin.style.display = 'block';
+                    selectedPatientName.textContent = patientName;
+                    loadMedicines(patientId);
+                });
+            });
+        }
+        
+        // --------------------------------------------------
+        // Load Medicines for a Patient
+        // --------------------------------------------------
+        async function loadMedicines(patientId) {
+            try {
+                const response = await fetch(`${Pat_apiUrl}/${patientId}`);
+                if (!response.ok) {
+                    throw new Error('Error loading patient data for medicines');
+                }
+                const patient = await response.json();
+                console.log("Patient data for medicines:", patient.Medicines);
+                const medicinesList = (patient.Medicines || '');
+                const medicineTimes = (patient.time_medicines || '').split(',').map(time => time.trim());
+                const medicinesDelivered = patient.medicines_delivered || {};
+        
+                medList.innerHTML = '';
+        
+                const today = new Date().toISOString().split('T')[0];
+        
+                medicineTimes.forEach(time => {
+                    medicinesList.forEach(medicine => {
+                        const medKey = `${medicine}-${time}-${today}`;
+                        const isDelivered = medicinesDelivered[medKey] === true;
+                        const medItem = `
+                            <div class="med-item">
+                                <div class="med-info">
+                                    <div class="med-name">${medicine}</div>
+                                    <div class="med-schedule">Schedule: ${time}</div>
+                                </div>
+                                <div class="med-status ${isDelivered ? 'status-delivered' : 'status-scheduled'}">
+                                    ${isDelivered ? 'Delivered' : 'Scheduled'}
+                                </div>
+                                ${
+                                    !isDelivered
+                                        ? `<button class="btn deliver-btn" data-id="${patientId}" data-med="${medicine}" data-time="${time}">Mark as Delivered</button>`
+                                        : ''
+                                }
+                            </div>
+                        `;
+                        medList.insertAdjacentHTML('beforeend', medItem);
+                    });
+                });
+        
+                document.querySelectorAll('.deliver-btn').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        const patId = this.getAttribute('data-id');
+                        const medicine = this.getAttribute('data-med');
+                        const time = this.getAttribute('data-time');
+                        const medKey = `${medicine}-${time}-${today}`;
+        
+                        try {
+                            const patientResp = await fetch(`${Pat_apiUrl}/${patId}`);
+                            if (!patientResp.ok) {
+                                throw new Error('Error fetching patient for update');
+                            }
+                            const patData = await patientResp.json();
+                            const updatedDelivered = patData.medicines_delivered || {};
+                            updatedDelivered[medKey] = true;
+        
+                            const updateResp = await fetch(`${Pat_apiUrl}/${patId}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    ...patData,
+                                    medicines_delivered: updatedDelivered
+                                })
+                            });
+                            if (!updateResp.ok) {
+                                throw new Error('Error updating medicine delivery');
+                            }
+                            
+                            console.log('Medicine marked as delivered');
+                            loadMedicines(patId);
+                        } catch (error) {
+                            console.error('Error updating medicine status:', error);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading medicines:', error);
+            }
+        }
+    
+        // Initial load of patients when the page is loaded
+        loadPatients();
+    </script>
+    
+        
+</body>
+</html>

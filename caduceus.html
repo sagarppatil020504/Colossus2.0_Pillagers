@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caduceus Symbol</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .caduceus {
+            position: relative;
+            width: 100px;
+            height: 200px;
+        }
+
+        .staff {
+            position: absolute;
+            width: 10px;
+            height: 100%;
+            background-color: #8B4513; /* Brown color for the staff */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .snake {
+            position: absolute;
+            width: 15px;
+            height: 150px;
+            background: linear-gradient(to right, #228B22, #32CD32);
+            border-radius: 10px;
+            left: 50%;
+            transform-origin: bottom center;
+            box-shadow: 0 0 10px rgba(0,100,0,0.5);
+            animation: slither 3s infinite ease-in-out;
+        }
+
+
+        .snake.left {
+            bottom: 50%;
+            transform: translate(-50%, 0) rotate(-30deg);
+        }
+
+        .snake.right {
+            top: 50%;
+            transform: translate(-50%, -100%) rotate(30deg);
+        }
+
+        @keyframes slither {
+            0%, 100% {
+                transform: translate(-50%, 0) rotate(-30deg) scaleY(1);
+            }
+            50% {
+                transform: translate(-50%, -10px) rotate(-35deg) scaleY(1.05);
+            }
+        }
+
+        .snake::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 5px;
+            height: 5px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 10px 0 #fff, 0 20px 0 #fff;
+        }
+
+        .snake::after {
+            content: '>';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff4500;
+            font-size: 12px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="caduceus">
+        <div class="staff"></div>
+        <div class="wings"></div>
+        <div class="snake left"></div>
+        <div class="snake right"></div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare - Schedule an Appointment</title>
+    <link rel="stylesheet" href="chat_css.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
+        }
+        .logo {
+            color: #005EB8;
+            font-size: 28px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin: 0;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .error {
+            color: #d9534f;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .btn-submit {
+            background-color: #005EB8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #004999;
+        }
+        .required:after {
+            content: " *";
+            color: #d9534f;
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #005EB8;
+        }
+        .time-slot {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .time-option {
+            background-color: #f1f5f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .time-option:hover {
+            background-color: #e6eef5;
+        }
+        .time-option.selected {
+            background-color: #cce5ff;
+            border-color: #99caff;
+        }
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .steps {
+            display: flex;
+            margin-bottom: 30px;
+        }
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+        }
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background-color: #ddd;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+        .step.active .step-number {
+            background-color: #005EB8;
+        }
+        .step:not(:last-child):after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: 0;
+            width: 50%;
+            height: 2px;
+            background-color: #ddd;
+        }
+        .step:not(:first-child):before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 50%;
+            height: 2px;
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Medicare</div>
+        <h1>Schedule an Appointment</h1>
+    </header>
+<!-- chatbot section -->
+     
+    <!-- Chat button -->
+    <div class="chat-button" id="chatButton">
+        <span class="chat-icon">💬</span>
+    </div>
+
+    <!-- Chat dialog -->
+    <div class="chat-dialog" id="chatDialog">
+        <div class="chat-header">
+            <div class="chat-title">
+                <span class="chat-icon">🤖</span> AI Assistant
+            </div>
+            <div class="chat-close" id="chatClose">✕</div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+                Hello! How can I help you today?
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." autocomplete="off">
+            <button class="chat-send" id="chatSend">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+     <!-- end of chatbot -->
+    <div class="steps">
+        <div class="step active">
+            <div class="step-number">1</div>
+            <div>Patient Details</div>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div>Appointment Type</div>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <div>Select Doctor</div>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <div>Confirmation</div>
+        </div>
+    </div>
+
+    <form id="appointmentForm">
+        <div class="card">
+            <div class="section-title">Patient Information</div>
+            
+            <div class="form-group">
+                <label for="medicareNumber" class="required">Medicare Number</label>
+                <input type="text" id="medicareNumber" placeholder="Enter your Medicare Number" required>
+                <div class="error" id="medicareNumberError">Please enter a valid Medicare Number</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="fullName" class="required">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="dob" class="required">Date of Birth</label>
+                <input type="date" id="dob" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="required">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Enter your phone number" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email address">
+                <div class="info-text">Appointment details will be sent to this email</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Appointment Details</div>
+            
+            <div class="form-group">
+                <label for="appointmentType" class="required">Appointment Type</label>
+                <select id="appointmentType" required>
+                    <option value="">Please select</option>
+                    <option value="initial">Initial Consultation</option>
+                    <option value="followup">Follow-up Visit</option>
+                    <option value="urgent">Urgent Care</option>
+                    <option value="preventive">Preventive Care</option>
+                    <option value="telehealth">Telehealth</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="specialty" class="required">Medical Specialty</label>
+                <select id="specialty" required>
+                    <option value="">Please select</option>
+                    <option value="primary">Primary Care Physician</option>
+                    <option value="cardiology">Cardiology</option>
+                    <option value="dermatology">Dermatology</option>
+                    <option value="endocrinology">Endocrinology</option>
+                    <option value="gastroenterology">Gastroenterology</option>
+                    <option value="neurology">Neurology</option>
+                    <option value="orthopedics">Orthopedics</option>
+                    <option value="rheumatology">Rheumatology</option>
+                    <option value="urology">Urology</option>
+                    <option value="podiatry">Podiatry</option>
+                    <option value="ophthalmology">Ophthalmology</option>
+                    <option value="psychiatry">Psychiatry</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="doctor" class="required">Select Doctor</label>
+                <select id="doctor" required disabled>
+                    <option value="">Please select a specialty first</option>
+                </select>
+                <div class="info-text">Doctors will be available based on selected specialty</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="issueDescription" class="required">Describe Your Medical Issue</label>
+                <textarea id="issueDescription" placeholder="Please describe your symptoms or reason for appointment" required></textarea>
+                <div class="info-text">This helps us prepare for your visit</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Appointment Date and Time</div>
+            
+            <div class="form-group">
+                <label for="appointmentDate" class="required">Preferred Date</label>
+                <input type="date" id="appointmentDate" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Preferred Time</label>
+                <div class="time-slot">
+                    <div class="time-option" data-time="9:00 AM">9:00 AM</div>
+                    <div class="time-option" data-time="10:00 AM">10:00 AM</div>
+                    <div class="time-option" data-time="11:00 AM">11:00 AM</div>
+                    <div class="time-option" data-time="1:00 PM">1:00 PM</div>
+                    <div class="time-option" data-time="2:00 PM">2:00 PM</div>
+                    <div class="time-option" data-time="3:00 PM">3:00 PM</div>
+                    <div class="time-option" data-time="4:00 PM">4:00 PM</div>
+                </div>
+                <input type="hidden" id="selectedTime">
+            </div>
+            
+            <div class="form-group">
+                <label for="additionalNotes">Additional Notes (Optional)</label>
+                <textarea id="additionalNotes" placeholder="Any additional information you'd like us to know before your appointment"></textarea>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="agreeTerms" required>
+                    I confirm that the information provided is accurate and authorize Medicare to process this appointment request.
+                </label>
+            </div>
+            
+            <button type="submit" class="btn-submit">Schedule Appointment</button>
+        </div>
+    </form>
+    <script src="chat_script.js"></script>
+    <script>
+        // Simple form interaction logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Time slot selection
+            const timeOptions = document.querySelectorAll('.time-option');
+            const selectedTimeInput = document.getElementById('selectedTime');
+            
+            timeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    timeOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedTimeInput.value = this.dataset.time;
+                });
+            });
+            
+            // Dynamic doctor loading based on specialty
+            const specialtySelect = document.getElementById('specialty');
+            const doctorSelect = document.getElementById('doctor');
+            
+            specialtySelect.addEventListener('change', function() {
+                if (this.value) {
+                    doctorSelect.disabled = false;
+                    doctorSelect.innerHTML = ''; // Clear previous options
+                    
+                    // Add placeholder option
+                    const placeholderOption = document.createElement('option');
+                    placeholderOption.value = '';
+                    placeholderOption.textContent = 'Select a doctor';
+                    doctorSelect.appendChild(placeholderOption);
+                    
+                    // Simulate loading doctors based on specialty
+                    const doctors = getDoctorsBySpecialty(this.value);
+                    doctors.forEach(doctor => {
+                        const option = document.createElement('option');
+                        option.value = doctor.id;
+                        option.textContent = doctor.name;
+                        doctorSelect.appendChild(option);
+                    });
+                } else {
+                    doctorSelect.disabled = true;
+                    doctorSelect.innerHTML = '<option value="">Please select a specialty first</option>';
+                }
+            });
+            
+            // Form submission
+            const appointmentForm = document.getElementById('appointmentForm');
+            appointmentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect form data
+                const formData = {
+                    medicareNumber: document.getElementById('medicareNumber').value,
+                    fullName: document.getElementById('fullName').value,
+                    dob: document.getElementById('dob').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    appointmentType: document.getElementById('appointmentType').value,
+                    specialty: document.getElementById('specialty').value,
+                    doctor: document.getElementById('doctor').value,
+                    issueDescription: document.getElementById('issueDescription').value,
+                    appointmentDate: document.getElementById('appointmentDate').value,
+                    selectedTime: document.getElementById('selectedTime').value,
+                    additionalNotes: document.getElementById('additionalNotes').value
+                };
+                
+                // In a real application, this would send the data to a server
+                console.log('Appointment Data:', formData);
+                alert('Your appointment request has been submitted. You will receive a confirmation soon.');
+            });
+            
+            // Mock function to get doctors by specialty
+            function getDoctorsBySpecialty(specialty) {
+                const doctorsBySpecialty = {
+                    primary: [
+                        { id: 'p1', name: 'Dr. James Wilson' },
+                        { id: 'p2', name: 'Dr. Sarah Johnson' },
+                        { id: 'p3', name: 'Dr. Robert Lee' }
+                    ],
+                    cardiology: [
+                        { id: 'c1', name: 'Dr. Michael Chen' },
+                        { id: 'c2', name: 'Dr. Patricia Rivera' }
+                    ],
+                    dermatology: [
+                        { id: 'd1', name: 'Dr. Emily Taylor' },
+                        { id: 'd2', name: 'Dr. David Kim' }
+                    ],
+                    endocrinology: [
+                        { id: 'e1', name: 'Dr. Lisa Wong' },
+                        { id: 'e2', name: 'Dr. Mark Stevens' }
+                    ],
+                    gastroenterology: [
+                        { id: 'g1', name: 'Dr. Thomas Brown' },
+                        { id: 'g2', name: 'Dr. Sofia Rodriguez' }
+                    ],
+                    neurology: [
+                        { id: 'n1', name: 'Dr. Jennifer Smith' },
+                        { id: 'n2', name: 'Dr. John Davis' }
+                    ],
+                    orthopedics: [
+                        { id: 'o1', name: 'Dr. Richard Miller' },
+                        { id: 'o2', name: 'Dr. Karen Thompson' }
+                    ],
+                    rheumatology: [
+                        { id: 'r1', name: 'Dr. Elizabeth Clark' },
+                        { id: 'r2', name: 'Dr. William Martinez' }
+                    ],
+                    urology: [
+                        { id: 'u1', name: 'Dr. Anthony Garcia' },
+                        { id: 'u2', name: 'Dr. Nancy Wilson' }
+                    ],
+                    podiatry: [
+                        { id: 'pd1', name: 'Dr. Christopher Jones' },
+                        { id: 'pd2', name: 'Dr. Olivia White' }
+                    ],
+                    ophthalmology: [
+                        { id: 'op1', name: 'Dr. Rachel Green' },
+                        { id: 'op2', name: 'Dr. Daniel Lewis' }
+                    ],
+                    psychiatry: [
+                        { id: 'ps1', name: 'Dr. Michelle Walker' },
+                        { id: 'ps2', name: 'Dr. Kevin Baker' }
+                    ]
+                };
+                
+                return doctorsBySpecialty[specialty] || [];
+            }
+        });
+    </script>
+</body>
+</html>
