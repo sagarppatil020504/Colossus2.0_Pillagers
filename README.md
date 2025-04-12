@@ -1,3 +1,5 @@
+AI POWERED SMART PILL  DISPENSER
+
 Case 1: Problem Statement 
 Hospitals and clinics face severe overcrowding due to patients seeking basic medications, while public spaces like airports and railway stations lack access to essential medicines, leaving individuals without immediate relief.
 
